@@ -68,50 +68,60 @@ export default function Checkout({
     setStep('payment');
   };
 
-  const handleStartPayment = async () => {
-    setLoading(true);
+ const handleStartPayment = async () => {
+  setLoading(true);
 
-    try {
-      const generatedOrderId = `DJASSA-${Math.floor(100000 + Math.random() * 900000)}`;
+  // 1. Ouvrir la fenêtre TOUT DE SUITE, de façon synchrone
+  const paymentWindow = window.open('', '_blank');
 
-      const payload = {
-        id: generatedOrderId,
-        design: {
-          productType,
-          color,
-          elements,
-          customizationMode,
-              size: null
+  try {
+    const generatedOrderId = `DJASSA-${Math.floor(100000 + Math.random() * 900000)}`;
 
-        },
-        quantity: 1,
-        totalAmount: price,
-        clientName: name,
-        clientPhone: phone,
-        clientEmail: email,
-        clientCity: city,
-        clientAddress: address,
-        paymentMethod,
-        paymentPhone: paymentMethod !== "card" ? paymentPhone : "",
-        paymentStatus: "pending"
-      };
+    const payload = {
+      id: generatedOrderId,
+      design: {
+        productType,
+        color,
+        elements,
+        customizationMode,
+        size: null
+      },
+      quantity: 1,
+      totalAmount: price,
+      clientName: name,
+      clientPhone: phone,
+      clientEmail: email,
+      clientCity: city,
+      clientAddress: address,
+      paymentMethod,
+      paymentPhone: paymentMethod !== "card" ? paymentPhone : "",
+      paymentStatus: "pending"
+    };
 
-      const docId = await createOrder(payload);
-      
-      setFirestoreId(docId);
-      setOrderId(generatedOrderId);
+    const docId = await createOrder(payload);
 
-      const paymentUrl = PAYMENT_LINKS[paymentMethod].url;
-      window.open(paymentUrl, "_blank");
+    setFirestoreId(docId);
+    setOrderId(generatedOrderId);
 
-      setStep("processing");
-    } catch (err) {
-      console.error(err);
-      alert("Erreur lors de la création du paiement");
-    } finally {
-      setLoading(false);
+    const paymentUrl = PAYMENT_LINKS[paymentMethod].url;
+
+    // 2. Rediriger la fenêtre déjà ouverte
+    if (paymentWindow) {
+      paymentWindow.location.href = paymentUrl;
+    } else {
+      // Popup bloqué malgré tout (rare) → fallback dans le même onglet
+      window.location.href = paymentUrl;
     }
-  };
+
+    setStep("processing");
+  } catch (err) {
+    console.error(err);
+    if (paymentWindow) paymentWindow.close(); // nettoie la fenêtre vide si erreur
+    alert("Erreur lors de la création du paiement");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Fonction pour envoyer le message WhatsApp au vendeur
  const getWhatsAppLink = () => {
@@ -165,7 +175,7 @@ Merci.`;
               Finaliser ma création
             </h3>
             <p className="text-xs text-gray-400 font-bold">
-              PRODUIT: {productType.toUpperCase()} • MODE: {customizationMode.toUpperCase()} • BASE: {color}
+              PRODUIT: {productType.toUpperCase()} • MODE: {customizationMode.toUpperCase()} 
             </p>
           </div>
           <button 
