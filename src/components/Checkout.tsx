@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, CreditCard, Landmark, CheckCircle, ArrowRight, ShieldCheck, PhoneCall, Loader2 } from 'lucide-react';
 import { ProductType, CustomElement } from '../types';
 import { createOrder, updateOrderPayment } from '../firebase';
@@ -68,10 +68,16 @@ export default function Checkout({
     setStep('payment');
   };
 
- const handleStartPayment = async () => {
+
+// dans le composant
+const isProcessingRef = useRef(false);
+
+const handleStartPayment = async () => {
+  if (isProcessingRef.current) return; // bloque tout double appel immédiatement
+  isProcessingRef.current = true;
   setLoading(true);
 
-  // 1. Ouvrir la fenêtre TOUT DE SUITE, de façon synchrone
+  // Ouvre la fenêtre TOUT DE SUITE, de façon synchrone
   const paymentWindow = window.open('', '_blank');
 
   try {
@@ -79,13 +85,7 @@ export default function Checkout({
 
     const payload = {
       id: generatedOrderId,
-      design: {
-        productType,
-        color,
-        elements,
-        customizationMode,
-        size: null
-      },
+      design: { productType, color, elements, customizationMode, size: null },
       quantity: 1,
       totalAmount: price,
       clientName: name,
@@ -99,27 +99,25 @@ export default function Checkout({
     };
 
     const docId = await createOrder(payload);
-
     setFirestoreId(docId);
     setOrderId(generatedOrderId);
 
     const paymentUrl = PAYMENT_LINKS[paymentMethod].url;
 
-    // 2. Rediriger la fenêtre déjà ouverte
     if (paymentWindow) {
       paymentWindow.location.href = paymentUrl;
     } else {
-      // Popup bloqué malgré tout (rare) → fallback dans le même onglet
       window.location.href = paymentUrl;
     }
 
     setStep("processing");
   } catch (err) {
     console.error(err);
-    if (paymentWindow) paymentWindow.close(); // nettoie la fenêtre vide si erreur
+    if (paymentWindow) paymentWindow.close();
     alert("Erreur lors de la création du paiement");
   } finally {
     setLoading(false);
+    isProcessingRef.current = false;
   }
 };
 

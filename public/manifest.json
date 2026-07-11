@@ -1,0 +1,25 @@
+{
+  "short_name": "DjassaClub",
+  "name": "DjassaClub - Personnalisation de vêtements",
+  "description": "Créez et personnalisez vos t-shirts, sweats, hoodies et accessoires avec DjassaClub. Donnez vie à vos idées grâce à une expérience de personnalisation unique.",
+"icons": [
+  {
+    "src": "/assets/logo.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any"
+  },
+  {
+    "src": "/assets/logo.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "maskable"
+  }
+],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F172A",
+  "theme_color": "#2563EB"
+}
