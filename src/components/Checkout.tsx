@@ -81,7 +81,8 @@ export default function Checkout({
           color,
           elements,
           customizationMode,
-          size
+              size: null
+
         },
         quantity: 1,
         totalAmount: price,

@@ -29,48 +29,36 @@ const WHATSAPP_NUMBER = '225XXXXXXXXX';
 const CLOTHING_MODELS = [
   {
     id: 'model-1',
-    name: 'Coupe Classique',
-    description: 'Silhouette standard, confortable et intemporelle',
     imgFront: '/assets/ex1.jpg',
     imgBack: '/assets/ex1.jpg',
     thumbnail: '/assets/ex1.jpg'
   },
   {
     id: 'model-2',
-    name: 'Oversize',
-    description: 'Coupe ample, tendance streetwear décontractée',
     imgFront: '/assets/ex2.jpg',
     imgBack: '/assets/ex2.jpg',
     thumbnail: '/assets/ex2.jpg'
   },
   {
     id: 'model-3',
-    name: 'Boxy Fit',
-    description: 'Coupe carrée, structurée et moderne',
     imgFront: '/assets/ex3.jpg',
     imgBack: '/assets/ex3.jpg',
     thumbnail: '/assets/ex3.jpg'
   },
   {
     id: 'model-4',
-    name: 'Crop Top',
-    description: 'Coupe courte, style féminin et audacieux',
     imgFront: '/assets/ex4.jpg',
     imgBack: '/assets/ex4.jpg',
     thumbnail: '/assets/ex4.jpg'
   },
   {
     id: 'model-5',
-    name: 'Longue',
-    description: 'Coupe allongée, confort oversize maximal',
     imgFront: '/assets/ex5.jpg',
     imgBack: '/assets/ex5.jpg',
     thumbnail: '/assets/ex5.jpg'
   },
   {
     id: 'model-6',
-    name: 'Raglan',
-    description: 'Manches raglan, style sportif rétro',
     imgFront: '/assets/ex6.jpg',
     imgBack: '/assets/ex6.jpg',
     thumbnail: '/assets/ex6.jpg'
@@ -81,16 +69,12 @@ const CLOTHING_MODELS = [
 const MAGAZINE_MODELS = [
   {
     id: 'mag-1',
-    name: 'Format Carré',
-    description: 'Carré 20x20cm, parfait pour les photos',
     imgFront: '/assets/models/magazine/square.png',
     imgBack: '/assets/models/magazine/square-back.png',
     thumbnail: '/assets/models/magazine/square-thumb.jpg'
   },
   {
     id: 'mag-2',
-    name: 'Format Portrait',
-    description: 'Portrait 15x21cm, style livre d\'art',
     imgFront: '/assets/models/magazine/portrait.png',
     imgBack: '/assets/models/magazine/portrait-back.png',
     thumbnail: '/assets/models/magazine/portrait-thumb.jpg'
@@ -100,8 +84,6 @@ const MAGAZINE_MODELS = [
 // Cadre - pas de modèle, juste un conteneur pour la photo
 const FRAME_MODEL = {
   id: 'frame-1',
-  name: 'Cadre Photo',
-  description: 'Encadrez votre photo dans un cadre premium',
   imgFront: '/assets/cadre.jpg',
   imgBack: '',
   thumbnail: '/assets/cadre.jpg'
@@ -120,10 +102,7 @@ const PRODUCT_TEMPLATES = [
     colors: [
       { name: 'Noir', hex: '#111111' },
       { name: 'Blanc', hex: '#F8F8F8' },
-      { name: 'Rouge', hex: '#C8102E' },
-      { name: 'Vert Lime', hex: '#CCFF00' },
-      { name: 'Bleu Royal', hex: '#0033A0' },
-      { name: 'Rose', hex: '#FF69B4' }
+      { name: 'Gris', hex: '#333333' },
     ],
     sides: ['front', 'back'] as const,
     models: CLOTHING_MODELS,
@@ -139,8 +118,7 @@ const PRODUCT_TEMPLATES = [
       { name: 'Noir', hex: '#111111' },
       { name: 'Blanc', hex: '#F8F8F8' },
       { name: 'Gris', hex: '#333333' },
-      { name: 'Bordeaux', hex: '#800020' },
-      { name: 'Sable', hex: '#C4A882' }
+   
     ],
     sides: ['front', 'back'] as const,
     models: CLOTHING_MODELS,
@@ -390,7 +368,7 @@ export default function Customizer({
 
   // Lien WhatsApp pré-rempli pour le magazine (format déjà choisi à l'étape 1)
   const whatsappMessage = encodeURIComponent(
-    `Bonjour DjassaClub ! Je souhaite commander un Magazine (${currentModel.name}). Pouvez-vous m'aider à finaliser ma commande ?`
+    `Bonjour DjassaClub ! Je souhaite commander un Magazine (${currentModel.id}). Pouvez-vous m'aider à finaliser ma commande ?`
   );
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
 
@@ -459,15 +437,12 @@ export default function Customizer({
                       <Check className="w-3 h-3" />
                     </div>
                   )}
-                  <div className="w-full aspect-square bg-gray-100 rounded-xl overflow-hidden mb-2">
+                  <div className="w-full aspect-auto bg-gray-100 rounded-xl overflow-hidden mb-2">
                     <img
                       src={model.thumbnail}
-                      alt={model.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h4 className="font-bold text-xs text-gray-900">{model.name}</h4>
-                  <p className="text-[9px] text-gray-400 mt-0.5 line-clamp-1">{model.description}</p>
                 </motion.button>
               ))}
             </div>
@@ -484,7 +459,7 @@ export default function Customizer({
               <MessageCircle className="w-8 h-8 text-[#25D366]" />
             </div>
             <h3 className="font-black text-2xl text-gray-950 mb-2">
-              Format sélectionné : {currentModel.name}
+              Format sélectionné : {currentModel.id}
             </h3>
             <p className="text-sm text-gray-500 mb-8">
               Vos magazines contiennent plusieurs pages et photos — on préfère
