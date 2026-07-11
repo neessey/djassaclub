@@ -6,6 +6,7 @@ import {
   ChevronLeft, MessageCircle
 } from 'lucide-react';
 import { ProductType, CustomElement, UserDesign } from '../types';
+  import { uploadPhotoToCloudinary } from '../lib/cloudinary';
 import Checkout from './Checkout';
 import { saveDesign } from '../firebase';
 
@@ -102,7 +103,7 @@ const PRODUCT_TEMPLATES = [
     colors: [
       { name: 'Noir', hex: '#111111' },
       { name: 'Blanc', hex: '#F8F8F8' },
-      { name: 'Gris', hex: '#333333' },
+      { name: 'Gris', hex: '#888888' },
     ],
     sides: ['front', 'back'] as const,
     models: CLOTHING_MODELS,
@@ -117,7 +118,7 @@ const PRODUCT_TEMPLATES = [
     colors: [
       { name: 'Noir', hex: '#111111' },
       { name: 'Blanc', hex: '#F8F8F8' },
-      { name: 'Gris', hex: '#333333' },
+      { name: 'Gris', hex: '#888888' },
    
     ],
     sides: ['front', 'back'] as const,
@@ -133,7 +134,7 @@ const PRODUCT_TEMPLATES = [
     colors: [
       { name: 'Noir', hex: '#111111' },
       { name: 'Blanc', hex: '#F8F8F8' },
-      { name: 'Gris', hex: '#333333' }
+      { name: 'Gris', hex: '#888888' }
     ],
     sides: ['front', 'back'] as const,
     models: CLOTHING_MODELS,
@@ -255,27 +256,36 @@ export default function Customizer({
   }, [initialProductType]);
 
   // Gestion des images uploadées
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
 
-    const newImages: string[] = [];
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          newImages.push(event.target.result as string);
-          if (newImages.length === files.length) {
-            setUploadedImages(prev => [...prev, ...newImages]);
-            if (newImages.length > 0) {
-              addImageElement(newImages[0]);
-            }
-          }
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+// nouvel état pour le feedback pendant l'upload
+const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+
+const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files;
+  if (!files || files.length === 0) return;
+
+  setIsUploadingPhoto(true);
+  try {
+    const uploadedUrls: string[] = [];
+
+    for (const file of Array.from(files)) {
+      const url = await uploadPhotoToCloudinary(file);
+      uploadedUrls.push(url);
+    }
+
+    setUploadedImages(prev => [...prev, ...uploadedUrls]);
+
+    // on ajoute l'élément sur le canvas avec l'URL Cloudinary, pas le base64
+    if (uploadedUrls.length > 0) {
+      addImageElement(uploadedUrls[0]);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de l'envoi de la photo. Réessayez.");
+  } finally {
+    setIsUploadingPhoto(false);
+  }
+};
 
   const addImageElement = (imageUrl: string) => {
     const newElement: CustomElement = {
@@ -573,23 +583,32 @@ export default function Customizer({
                   </label>
 
                   <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:border-black transition group"
-                  >
-                    <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2 group-hover:text-black transition" />
-                    <p className="text-sm font-medium text-gray-600 group-hover:text-black transition">
-                      Cliquez pour uploader
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">PNG, JPG - Max 5MB</p>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageUpload}
-                      className="hidden"
-                    />
-                  </div>
+  onClick={() => !isUploadingPhoto && fileInputRef.current?.click()}
+  className={`border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center transition group ${
+    isUploadingPhoto ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:border-black'
+  }`}
+>
+  {isUploadingPhoto ? (
+    <p className="text-sm font-medium text-gray-600">Envoi en cours...</p>
+  ) : (
+    <>
+      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2 group-hover:text-black transition" />
+      <p className="text-sm font-medium text-gray-600 group-hover:text-black transition">
+        Cliquez pour uploader
+      </p>
+      <p className="text-xs text-gray-400 mt-1">PNG, JPG - Max 5MB</p>
+    </>
+  )}
+  <input
+    ref={fileInputRef}
+    type="file"
+    accept="image/*"
+    multiple
+    onChange={handleImageUpload}
+    disabled={isUploadingPhoto}
+    className="hidden"
+  />
+</div>
 
                   {uploadedImages.length > 0 && (
                     <div className="mt-4">

@@ -130,57 +130,75 @@ export default function Checkout({
 
   const isProcessingRef = useRef(false);
 
-  const handleStartPayment = async () => {
-    if (isProcessingRef.current) return;
-    isProcessingRef.current = true;
-    setLoading(true);
+const handleStartPayment = async () => {
+  console.log('[PAYMENT] Clic reçu, isProcessing:', isProcessingRef.current);
+  if (isProcessingRef.current) {
+    console.log('[PAYMENT] Bloqué par le ref, sortie');
+    return;
+  }
+  isProcessingRef.current = true;
+  setLoading(true);
 
-    const paymentWindow = window.open('', '_blank');
+  console.log('[PAYMENT] Tentative ouverture fenêtre...');
+  const paymentWindow = window.open('', '_blank');
+  console.log('[PAYMENT] paymentWindow =', paymentWindow); // null si bloqué
 
-    try {
-      const generatedOrderId = `DJASSA-${Math.floor(100000 + Math.random() * 900000)}`;
+  try {
+    const generatedOrderId = `DJASSA-${Math.floor(100000 + Math.random() * 900000)}`;
+    console.log('[PAYMENT] Création commande Firestore...');
 
-      const payload = {
-        id: generatedOrderId,
-        design: { productType, color, elements, customizationMode, size: null },
-        quantity: 1,
-        totalAmount: price,
-        clientName: name,
-        clientPhone: phone,
-        clientEmail: email,
-        clientCity: city,
-        clientAddress: address,
-        paymentMethod,
-        paymentPhone: paymentMethod !== "card" ? paymentPhone : "",
-        paymentStatus: "pending"
-      };
+    const payload = {
+      id: generatedOrderId,
+      design: { productType, color, elements, customizationMode, size: null },
+      quantity: 1,
+      totalAmount: price,
+      clientName: name,
+      clientPhone: phone,
+      clientEmail: email,
+      clientCity: city,
+      clientAddress: address,
+      paymentMethod,
+      paymentPhone: paymentMethod !== "card" ? paymentPhone : "",
+      paymentStatus: "pending"
+    };
 
-      const docId = await createOrder(payload);
-      setFirestoreId(docId);
-      setOrderId(generatedOrderId);
+    const docId = await createOrder(payload);
+    console.log('[PAYMENT] Commande créée, docId:', docId);
 
-      const paymentUrl = PAYMENT_LINKS[paymentMethod].url;
+    setFirestoreId(docId);
+    setOrderId(generatedOrderId);
 
-      if (paymentWindow) {
-        paymentWindow.location.href = paymentUrl;
-      } else {
-        window.location.href = paymentUrl;
-      }
+    const paymentUrl = PAYMENT_LINKS[paymentMethod].url;
+    console.log('[PAYMENT] URL à ouvrir:', paymentUrl);
 
-      setStep("processing");
-    } catch (err) {
-      console.error(err);
-      if (paymentWindow) paymentWindow.close();
-      alert("Erreur lors de la création du paiement");
-    } finally {
-      setLoading(false);
-      isProcessingRef.current = false;
+    if (paymentWindow) {
+      paymentWindow.location.href = paymentUrl;
+      console.log('[PAYMENT] Redirection fenêtre effectuée');
+    } else {
+      console.log('[PAYMENT] Fenêtre nulle, fallback même onglet');
+      window.location.href = paymentUrl;
     }
-  };
+
+    setStep("processing");
+  } catch (err) {
+    console.error('[PAYMENT] ERREUR:', err);
+    if (paymentWindow) paymentWindow.close();
+    alert("Erreur lors de la création du paiement");
+  } finally {
+    setLoading(false);
+    isProcessingRef.current = false;
+  }
+};
 
   // Fonction pour envoyer le message WhatsApp au vendeur - AVEC LE NOM DE LA COULEUR
   const getWhatsAppLink = () => {
-    const message = `*NOUVELLE COMMANDE DJASSA CLUB*
+  // on récupère toutes les URLs photo (type 'logo') liées à la commande
+  const photoUrls = elements
+    .filter(el => el.type === 'logo')
+    .map(el => el.content)
+    .join('\n');
+
+  const message = `*NOUVELLE COMMANDE DJASSA CLUB*
 
  Commande : ${orderId}
 
@@ -199,10 +217,13 @@ Adresse : ${address}
 Paiement : ${paymentMethod.toUpperCase()}
 Numéro paiement : ${paymentPhone || "-"}
 
+📸 Photo(s) du client :
+${photoUrls || "Aucune photo jointe"}
+
 Merci.`;
 
-    return `https://wa.me/${VENDOR_PHONE}?text=${encodeURIComponent(message)}`;
-  };
+  return `https://wa.me/${VENDOR_PHONE}?text=${encodeURIComponent(message)}`;
+};
 
   const handlePaymentSuccess = async () => {
     try {
