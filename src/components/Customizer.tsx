@@ -69,15 +69,15 @@ const CLOTHING_MODELS = [
 const MAGAZINE_MODELS = [
   {
     id: 'mag-1',
-    imgFront: '/assets/models/magazine/square.png',
-    imgBack: '/assets/models/magazine/square-back.png',
-    thumbnail: '/assets/models/magazine/square-thumb.jpg'
+    imgFront: '/assets/mag-1.jpg',
+    imgBack: '/assets/mag-1.jpg',
+    thumbnail: '/assets/mag-1.jpg'
   },
   {
     id: 'mag-2',
-    imgFront: '/assets/models/magazine/portrait.png',
-    imgBack: '/assets/models/magazine/portrait-back.png',
-    thumbnail: '/assets/models/magazine/portrait-thumb.jpg'
+    imgFront: '/assets/mag-2.jpg',
+    imgBack: '/assets/mag-2.jpg',
+    thumbnail: '/assets/mag-2.jpg'
   }
 ];
 
@@ -159,7 +159,7 @@ const PRODUCT_TEMPLATES = [
     type: 'magazine' as ProductType,
     name: 'Magazine',
     description: 'Vos créations dans une édition papier',
-    price: 6500,
+    price: 13000,
     colors: [
       { name: 'Blanc', hex: '#F8F8F8' },
       { name: 'Noir', hex: '#111111' }
