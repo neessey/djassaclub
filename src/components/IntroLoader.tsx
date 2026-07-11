@@ -96,7 +96,10 @@ useEffect(() => {
       <motion.div
         exit={{ opacity: 0 }}
         transition={{ duration: 0.4, ease: 'easeInOut' }}
-        className="fixed inset-0 z-50 bg-white flex flex-col justify-between items-center py-6 px-4 overflow-hidden"
+        // overflow-y-auto en filet de sécurité : si un très petit écran (notch,
+        // barre de navigateur mobile) laisse malgré tout dépasser le contenu,
+        // on scrolle au lieu de couper le bouton "Entrer" ou la nav du haut.
+        className="fixed inset-0 z-50 bg-white flex flex-col justify-between items-center py-4 sm:py-6 px-3 sm:px-4 overflow-y-auto overflow-x-hidden"
       >
         {/* Décoration */}
         <div
@@ -107,28 +110,33 @@ useEffect(() => {
           }}
         />
 
-        {/* Barre de navigation */}
-        <div className="w-full max-w-6xl flex justify-between items-center z-10 px-4">
-          <div className="flex items-center gap-3">
+        {/* Barre de navigation — flex-wrap + truncate pour ne jamais déborder
+            même sur les écrans les plus étroits (ex : iPhone SE, 320px) */}
+        <div className="w-full max-w-6xl flex flex-wrap justify-between items-center gap-2 z-10 px-2 sm:px-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <motion.div 
-              className="w-2 h-2 rounded-full bg-black"
+              className="w-2 h-2 rounded-full bg-black shrink-0"
               animate={{ scale: stage === 'entrance' ? [1, 1.5, 1] : 1 }}
               transition={{ duration: 1.5, repeat: stage === 'entrance' ? Infinity : 0 }}
             />
-            <span className="text-[10px] font-sans text-zinc-400 tracking-[0.15em] uppercase">
+            <span className="text-[9px] sm:text-[10px] font-sans text-zinc-400 tracking-[0.1em] sm:tracking-[0.15em] uppercase truncate">
               Djassa Club — Showroom
             </span>
           </div>
           <button
             onClick={handleSkip}
-            className="text-[10px] font-sans text-zinc-400 hover:text-black transition-colors uppercase tracking-widest border border-zinc-200 hover:border-black px-4 py-2 rounded-full"
+            className="shrink-0 text-[9px] sm:text-[10px] font-sans text-zinc-400 hover:text-black transition-colors uppercase tracking-widest border border-zinc-200 hover:border-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-full"
           >
             Passer
           </button>
         </div>
 
-        {/* Conteneur principal */}
-        <div className="relative flex-1 w-full max-w-4xl flex items-center justify-center">
+        {/* Conteneur principal
+            min-h-0 est essentiel ici : sans ça, un enfant flex-1 refuse de
+            rétrécir sous sa taille intrinsèque, et sur un petit écran (ex :
+            iPhone SE en 568px de haut) le contenu déborde et coupe le bouton
+            "Entrer" en bas au lieu de s'adapter. */}
+        <div className="relative flex-1 min-h-0 w-full max-w-4xl flex items-center justify-center px-2">
           <motion.div
             className="relative"
             
@@ -143,22 +151,23 @@ useEffect(() => {
               transition={{ duration: 0.3 }}
             />
 
-            {/* Image avec transition simple */}
+            {/* Image avec transition simple.
+                Le conteneur utilise clamp() sur largeur ET hauteur : il s'adapte
+                en continu à la taille de l'écran (vw/vh) tout en gardant un
+                plancher lisible sur les très petits téléphones et un plafond
+                raisonnable sur tablette/desktop. object-contain à l'intérieur
+                garantit que l'image ne se déforme jamais et ne déborde jamais
+                de ce conteneur, quelle que soit la largeur ou la hauteur réelle
+                de l'écran (portrait, paysage, notch, barre d'adresse mobile...). */}
             <motion.div
-              className="relative"
-
+              className="relative w-[clamp(200px,70vw,26rem)] h-[clamp(280px,52vh,38rem)] mx-auto"
             >
              <AnimatePresence mode="wait">
   {currentImage && (
     <motion.img
   key={currentImage}
   src={currentImage}
-  className="
-    w-96 h-[34rem]
-    md:w-[32rem] md:h-[42rem]
-    object-contain
-    drop-shadow-2xl
-  "
+  className="w-full h-full object-contain drop-shadow-2xl"
   initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   exit={{ opacity: 0 }}
@@ -215,7 +224,7 @@ useEffect(() => {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.6, ease: 'easeInOut' }}
               onClick={handleEnter}
-              className="flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-full text-sm font-medium uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-lg hover:shadow-xl"
+              className="flex items-center gap-2 bg-black text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-xs sm:text-sm font-medium uppercase tracking-widest hover:bg-zinc-800 transition-colors shadow-lg hover:shadow-xl shrink-0"
             >
               Entrer
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
