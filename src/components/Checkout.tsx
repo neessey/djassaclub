@@ -261,136 +261,125 @@ Merci.`;
             </form>
           )}
 
-          {step === 'payment' && (
-            <div className="space-y-5">
-              <h4 className="text-xs font-bold text-red-400 uppercase tracking-widest block">
-                2. SÉLECTIONNER UN MODE DE PAIEMENT
-              </h4>
+         {step === 'payment' && (
+  <div className="space-y-6">
+    {/* Header avec icône */}
+    <div className="flex items-center gap-3 pb-3 border-b border-red-100">
+      <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+        <img src="/assets/wave.jpg" className="w-6 h-6 object-contain" alt="Wave" />
+      </div>
+      <div>
+        <h4 className="text-xs font-bold text-red-400 uppercase tracking-widest">
+          Paiement sécurisé
+        </h4>
+        <p className="text-[10px] text-gray-400">
+          Wave — Paiement instantané
+        </p>
+      </div>
+    </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('wave')}
-                  className={`border rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
-                    paymentMethod === 'wave'
-                      ? 'border-red-200 bg-red-50 text-gray-900'
-                      : 'border-gray-200 bg-white text-gray-400 hover:border-red-100 hover:bg-red-50'
-                  }`}
-                >
-                  <img src="/assets/wave.jpg" className="w-10 h-10 object-contain" alt="Wave" />
-                  <span className="text-xs font-bold uppercase tracking-tight">Wave Mobile Money</span>
-                </button>
+    {/* Carte Wave améliorée */}
+    <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-200 rounded-2xl p-6 shadow-sm">
+      <div className="flex items-center gap-4 mb-4">
+        <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+          <img src="/assets/wave.jpg" className="w-10 h-10 object-contain" alt="Wave" />
+        </div>
+        <div>
+          <h5 className="font-bold text-gray-900">Wave Mobile Money</h5>
+          <p className="text-xs text-gray-500">Paiement mobile sécurisé</p>
+        </div>
+        <div className="ml-auto">
+          <span className="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-medium">
+            ✓ Instantané
+          </span>
+        </div>
+      </div>
 
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('mtn')}
-                  className={`border rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
-                    paymentMethod === 'mtn'
-                      ? 'border-red-200 bg-red-50 text-gray-900'
-                      : 'border-gray-200 bg-white text-gray-400 hover:border-red-100 hover:bg-red-50'
-                  }`}
-                >
-                  <img src="/assets/MTN.jpg" className="w-10 h-10 object-contain" alt="MTN" />
-                  <span className="text-xs font-bold uppercase tracking-tight">MTN MoMo</span>
-                </button>
+      {/* Numéro de téléphone */}
+      <div className="space-y-1.5">
+        <label className="text-[10px] font-mono text-gray-500 block">
+          Numéro Wave Mobile Money
+        </label>
+        <div className="relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-mono">
+            +225
+          </div>
+          <input
+            type="tel"
+            required
+            value={paymentPhone}
+            onChange={(e) => setPaymentPhone(e.target.value)}
+            placeholder="07 00 00 00 00"
+            className="w-full bg-white border border-gray-200 rounded-xl pl-14 pr-4 py-3.5 text-sm text-gray-900 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition placeholder:text-gray-400"
+          />
+        </div>
+        
+      </div>
 
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('orange')}
-                  className={`border rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
-                    paymentMethod === 'orange'
-                      ? 'border-red-200 bg-red-50 text-gray-900'
-                      : 'border-gray-200 bg-white text-gray-400 hover:border-red-100 hover:bg-red-50'
-                  }`}
-                >
-                  <img src="/assets/orange.jpg" className="w-10 h-10 object-contain" alt="Orange" />
-                  <span className="text-xs font-bold uppercase tracking-tight">Orange Money</span>
-                </button>
+      {/* Prix et récapitulatif */}
+      <div className="mt-4 pt-4 border-t border-blue-100">
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-500">Montant à payer</span>
+          <span className="font-bold text-gray-900 text-lg">
+            {price.toLocaleString('fr-FR')} FCFA
+          </span>
+        </div>
+        <div className="flex justify-between items-center text-[10px] text-gray-400 mt-1">
+          <span>Frais de transaction</span>
+          <span>Inclus</span>
+        </div>
+      </div>
+    </div>
 
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('card')}
-                  className={`border rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
-                    paymentMethod === 'card'
-                      ? 'border-red-200 bg-red-50 text-gray-900'
-                      : 'border-gray-200 bg-white text-gray-400 hover:border-red-100 hover:bg-red-50'
-                  }`}
-                >
-                  <img src="/assets/card.jpg" className="w-10 h-10 object-contain" alt="Carte" />
-                  <span className="text-xs font-bold uppercase tracking-tight">Carte Bancaire</span>
-                </button>
-              </div>
+    {/* Sécurité et confiance */}
+    <div className="bg-gray-50 rounded-xl p-3 flex items-center gap-3">
+      <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+        <ShieldCheck className="w-4 h-4 text-green-500" />
+      </div>
+      <div>
+        <p className="text-xs font-medium text-gray-700">Paiement sécurisé</p>
+        <p className="text-[9px] text-gray-400">Transaction cryptée de bout en bout</p>
+      </div>
+      <div className="ml-auto text-[9px] text-gray-400 font-mono">
+        🔒 SSL
+      </div>
+    </div>
 
-              {paymentMethod !== 'card' && (
-                <div className="space-y-1.5 animate-fade-in">
-                  <label className="text-[10px] font-bold text-gray-400 block">Numéro de Téléphone {paymentMethod.toUpperCase()}</label>
-                  <input
-                    type="tel"
-                    required
-                    value={paymentPhone}
-                    onChange={(e) => setPaymentPhone(e.target.value)}
-                    placeholder="Ex: 07 00 00 00 00"
-                    className="w-full bg-gray-50 border border-red-100 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-red-200 transition placeholder:text-gray-400"
-                  />
-                  <p className="text-[10px] text-gray-400 font-bold leading-relaxed">
-                    Une demande de débit Push instantanée sera envoyée sur ce numéro de téléphone.
-                  </p>
-                </div>
-              )}
+    {/* Boutons d'action */}
+    <div className="flex gap-3 pt-2">
+      <button
+        type="button"
+        onClick={() => setStep('details')}
+        className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-500 py-3.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
+      >
+        Retour
+      </button>
+      <button
+        type="button"
+        onClick={handleStartPayment}
+        disabled={loading || !paymentPhone}
+        className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Envoi en cours...
+          </>
+        ) : (
+          <>
+            <img src="/assets/wave.jpg" className="w-4 h-4 object-contain brightness-0 invert" alt="Wave" />
+            Payer {price.toLocaleString('fr-FR')} FCFA
+          </>
+        )}
+      </button>
+    </div>
 
-              {paymentMethod === 'card' && (
-                <div className="space-y-3 animate-fade-in bg-gray-50 border border-red-100 p-4 rounded-xl">
-                  <div className="text-xs font-bold text-gray-400 mb-1 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-red-300" />
-                    PAIEMENT CARTE SÉCURISÉ
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Numéro de Carte (Simulé)"
-                      className="w-full bg-white border border-red-100 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-red-200 transition"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="MM/AA"
-                      className="w-full bg-white border border-red-100 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-red-200 transition"
-                    />
-                    <input
-                      type="text"
-                      placeholder="CVV"
-                      className="w-full bg-white border border-red-100 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-red-200 transition"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setStep('details')}
-                  className="flex-1 border border-gray-200 hover:bg-gray-50 text-gray-500 py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
-                >
-                  Retour
-                </button>
-                <button
-                  type="button"
-                  onClick={handleStartPayment}
-                  disabled={loading || (paymentMethod !== 'card' && !paymentPhone)}
-                  className="flex-1 bg-red-50 hover:bg-red-100 text-red-400 border border-red-200 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
-                >
-                  {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <>
-                      Payer {price.toLocaleString('fr-FR')} FCFA
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
+    {/* Petite mention */}
+    <p className="text-[9px] text-center text-gray-400 font-mono">
+      En cliquant sur "Payer", vous acceptez les conditions d'utilisation
+    </p>
+  </div>
+)}
 
           {step === 'processing' && (
             <div className="py-8 text-center flex flex-col items-center justify-center space-y-6">

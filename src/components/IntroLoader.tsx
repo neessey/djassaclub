@@ -141,12 +141,19 @@ useEffect(() => {
             className="relative"
             
           >
-            {/* Ombre portée */}
+            {/* Ombre portée — remplacée par un radial-gradient plutôt qu'un
+                filter: blur(). Le blur CSS sur un élément superposé à une
+                grande image force Safari iOS à recomposer la couche GPU en
+                continu ; sur un appareil ancien (A11/iPhone 8), ça peut faire
+                planter l'onglet, surtout répété à chaque changement d'image. */}
             <motion.div
-              className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-3/4 h-8 bg-gradient-to-r from-transparent via-black/10 to-transparent rounded-full blur-xl"
+              className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-3/4 h-8 rounded-full pointer-events-none"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 70%)'
+              }}
               animate={{
                 scale: isHovering ? 1.2 : 1,
-                opacity: isHovering ? 0.3 : 0.15,
+                opacity: isHovering ? 1 : 0.7,
               }}
               transition={{ duration: 0.3 }}
             />
@@ -161,13 +168,23 @@ useEffect(() => {
                 de l'écran (portrait, paysage, notch, barre d'adresse mobile...). */}
             <motion.div
               className="relative w-[clamp(200px,70vw,26rem)] h-[clamp(280px,52vh,38rem)] mx-auto"
+              style={{
+                // Vrai box-shadow CSS plutôt que filter: drop-shadow(). Le
+                // drop-shadow doit ré-échantillonner le canal alpha de l'image
+                // à chaque frame (coûteux) ; le box-shadow dessine une ombre
+                // sur le rectangle une bonne fois pour toutes (bien plus léger
+                // sur un GPU ancien comme celui d'un iPhone 8). L'ombre suit
+                // le cadre plutôt que le contour détouré de l'image — léger
+                // compromis visuel, mais imperceptible ici.
+              }}
             >
              <AnimatePresence mode="wait">
   {currentImage && (
     <motion.img
   key={currentImage}
   src={currentImage}
-  className="w-full h-full object-contain drop-shadow-2xl"
+  className="w-full h-full object-contain     drop-shadow-[0_20px_25px_rgba(0,0,0,0.15)]
+"
   initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   exit={{ opacity: 0 }}
