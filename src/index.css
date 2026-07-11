@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-syne: "Syne", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-brand-white: #111111;
+  --color-brand-black: #FCFCFC;
+  --color-brand-red: #C8102E;
+  --color-brand-gray: #71717A;
+  --color-brand-silver: #E4E4E7;
+
+}
+
+/* Custom Utilities and Animations */
+@layer utilities {
+  .text-chrome {
+    background: linear-gradient(
+      135deg,
+      #111111 0%,
+      #3f3f46 25%,
+      #a1a1aa 50%,
+      #111111 55%,
+      #27272a 70%,
+      #71717a 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 6s linear infinite;
+    text-shadow: 0 0 15px rgba(17, 17, 17, 0.05);
+  }
+
+  .text-chrome-red {
+    background: linear-gradient(
+      135deg,
+      #c8102e 0%,
+      #ef4444 30%,
+      #111111 50%,
+      #c8102e 55%,
+      #ffffff 70%,
+      #7f0c1e 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 6s linear infinite;
+    text-shadow: 0 0 20px rgba(200, 16, 46, 0.15);
+  }
+
+  .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(17, 17, 17, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(17, 17, 17, 0.05) 1px, transparent 1px);
+  }
+
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.02;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* Custom styles for drawing signature canvas */
+.signature-canvas {
+  touch-action: none;
+}
+
+/* Page transit and general style */
+html {
+  scroll-behavior: smooth;
+}

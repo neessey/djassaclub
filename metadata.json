@@ -1,0 +1,6 @@
+{
+  "name": "DjassaClub",
+  "description": "Premium interactive streetwear & custom merchandise simulator with real-time 3D preview, order tracking, and AI design suggestions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

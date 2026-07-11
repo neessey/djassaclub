@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "UserDesign": {
+      "title": "UserDesign",
+      "description": "Un design personnalisé créé par un utilisateur du DjassaClub",
+      "type": "object",
+      "properties": {
+        "productType": { "type": "string" },
+        "color": { "type": "string" },
+        "creatorName": { "type": "string" },
+        "creatorEmail": { "type": "string" },
+        "upvotes": { "type": "integer" },
+        "isPublic": { "type": "boolean" },
+        "createdAt": { "type": "integer" },
+        "imageUrl": { "type": "string" }
+      },
+      "required": ["productType", "color", "creatorName", "creatorEmail", "upvotes", "isPublic", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Une commande de produit personnalisé passée par un client",
+      "type": "object",
+      "properties": {
+        "quantity": { "type": "integer" },
+        "totalAmount": { "type": "integer" },
+        "clientName": { "type": "string" },
+        "clientPhone": { "type": "string" },
+        "clientEmail": { "type": "string" },
+        "clientCity": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "paymentPhone": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "trackingStatus": { "type": "string" },
+        "createdAt": { "type": "integer" }
+      },
+      "required": ["quantity", "totalAmount", "clientName", "clientPhone", "clientEmail", "clientCity", "paymentMethod", "paymentStatus", "trackingStatus", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/designs/{designId}": {
+      "schema": "UserDesign",
+      "description": "Collection des designs publics ou privés créés dans le Customizer"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection des commandes clients de vêtements et accessoires"
+    }
+  }
+}
